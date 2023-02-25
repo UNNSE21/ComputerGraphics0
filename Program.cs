@@ -84,6 +84,15 @@ public static class Program
             case "gray":
                 filter = new GrayscaleFilter();
                 break;
+            case "sepia":
+                filter = new SepiaFilter();
+                break;
+            case "inc":
+                filter = new IncreaseBrightnessFilter();
+                break;
+            case "shrooms":
+                filter = new ShroomsFilter();
+                break;
             default:
                 throw new NotSupportedException();
         }
