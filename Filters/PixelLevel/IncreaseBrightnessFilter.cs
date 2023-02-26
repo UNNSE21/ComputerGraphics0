@@ -6,7 +6,7 @@ namespace ComputerGraphics0.Filters.PixelLevel;
 public class IncreaseBrightnessFilter : IImageFilter
 {
     public string Name => "increase_brightness";
-    public int k;
+    private int k;
 
     public IncreaseBrightnessFilter(int k = 50)
     {
