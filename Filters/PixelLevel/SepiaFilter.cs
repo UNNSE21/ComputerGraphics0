@@ -7,7 +7,7 @@ public class SepiaFilter : IImageFilter
 {
 
     public string Name => "sepia";
-    public float sepiaCoeff;
+    private float sepiaCoeff;
 
     public SepiaFilter(float sepiaCoeff = 30f)
     {
