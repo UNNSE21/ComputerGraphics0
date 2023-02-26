@@ -4,47 +4,53 @@ using ComputerGraphics0.Filters;
 using ComputerGraphics0.Filters.PixelLevel;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using System.Linq;
 
 namespace ComputerGraphics0;
 
 public static class Program
 {   
     // args: 
-    // 0 - имя фильтра
-    // 1 - сохранять исходник (true|false). Если не bool - пытаемся прочитать путь (см. 2) 
-    // 2 - путь к картинке (если нет или не существует - берем из stdin).
+    // 0 - путь к картинке (если не существует - берем из stdin).
     //     Поскольку валидность существующего файла проверяется только на этапе загрузки в либу - если файл не картинка
     //      - выходим с ошибкой (иначе либо цикл и колхоз с флагами, либо goto. Оба плохо)
+    // 1 - имя фильтра
+    // 2 - сохранять исходник (true|false). 
+    // 3 и далее - параметры фильтра
+    // Для значения по умолчанию используем символ '-' (если путь тоже дефис - берем его из stdin)
     public static void Main(string[] args)
     {
         IImageFilter filter;
         Image<Argb32> input;
         string inputPath = "";
+        string filterName = "";
         bool saveSource = true;
-        if (args.Length < 1)
+        if (args.Length < 2)
         {
-            Console.Error.WriteLine("You must enter a filter name as argument");
+            Console.Error.WriteLine("You must enter a path and a filter name as arguments");
             return;
         }
-        if (args.Length == 1)
+
+        inputPath = args[0];
+        filterName = args[1];
+        if (args.Length >= 3)
         {
-            inputPath = Console.ReadLine();
-            ValidateInputPath(ref inputPath);
-        }
-        if (args.Length >= 2)
-        {
-            if (bool.TryParse(args[1], out saveSource))
+            if (!Boolean.TryParse(args[2], out saveSource))
             {
-                inputPath = args.Length < 3 ? Console.ReadLine() : args[2];
-                ValidateInputPath(ref inputPath);
-            }
-            else
-            {
-                saveSource = true;
-                inputPath = args[1];
-                ValidateInputPath(ref inputPath);
+                if (args[2] == "-")
+                {
+                    saveSource = true;
+                }
+                else
+                {
+                    Console.Error.WriteLine("Expected true or false value as third argument");
+                    return;
+                }
             }
         }
+        
+        filter = GetFilterByName(filterName, args.Skip(3).ToArray());
+        ValidateInputPath(ref inputPath);
         try
         {
             input = Image.Load<Argb32>(inputPath);
@@ -73,8 +79,10 @@ public static class Program
         Console.Write(resultPath);
     }
 
-    private static IImageFilter GetFilterByName(string name)
+    private static IImageFilter GetFilterByName(string name, params string[] filterArgs)
     {
+        // Если надо параметры для алгоритма - берем массив filterArgs и парсим его параметры из строк в нужный формат 
+        // с соответствующими проверками
         IImageFilter filter;
         switch (name)
         {
@@ -93,7 +101,7 @@ public static class Program
 
     private static void ValidateInputPath(ref string s)
     {
-        while (!File.Exists(s))
+        while (String.IsNullOrEmpty(s) ||  s == "-" || !File.Exists(s))
         {
             Console.Error.WriteLine("Input file does not exist. Reading from stdin");
             s = Console.ReadLine();
