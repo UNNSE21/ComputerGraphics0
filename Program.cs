@@ -115,12 +115,17 @@ public static class Program
         return filter;
     }
 
-    private static void ValidateInputPath(ref string s)
+    private static void ValidateInputPath(ref string path)
     {
-        while (String.IsNullOrEmpty(s) ||  s == "-" || !File.Exists(s))
+        if (path == "-")
         {
-            Console.Error.WriteLine("Input file does not exist. Reading from stdin");
-            s = Console.ReadLine();
+            path = Console.ReadLine();
+        }
+        while (String.IsNullOrEmpty(path) ||  path == "-" || !File.Exists(path))
+        {
+            Console.Error.WriteLine($"Input file ({path}) does not exist. Reading from stdin");
+            path = Console.ReadLine();
+            Console.WriteLine(path);
         }
     }
 }
