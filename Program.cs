@@ -79,9 +79,9 @@ public static class Program
             return;
         }
 
-        filter.Process(input);
+        var result = filter.Process(input);
         var resultPath = $"{Path.Join(Path.GetDirectoryName(inputPath), Path.GetFileNameWithoutExtension(inputPath))}_{filter.Name}.png";
-        input.SaveAsPng(resultPath);
+        result.SaveAsPng(resultPath);
         if (!saveSource)
         {
             File.Delete(inputPath);
