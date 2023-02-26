@@ -48,8 +48,26 @@ public static class Program
                 }
             }
         }
-        
-        filter = GetFilterByName(filterName, args.Skip(3).ToArray());
+
+        try
+        {
+            filter = GetFilterByName(filterName, args.Skip(3).ToArray());
+        }
+        catch (IndexOutOfRangeException)
+        {
+            Console.Error.WriteLine("Not enough parameters for this filter");
+            return;
+        }
+        catch (NotSupportedException)
+        {
+            Console.Error.WriteLine("Invalid filter option");
+            return;
+        }
+        catch(Exception ex) when (ex is FormatException || ex is OverflowException)
+        {
+            Console.Error.WriteLine("Not enough parameters for this filter");
+            return;
+        }
         ValidateInputPath(ref inputPath);
         try
         {
@@ -60,15 +78,7 @@ public static class Program
             Console.Error.WriteLine("Could not load an image. Either file is not an image or it's format is unsupported");
             return;
         }
-        try
-        {
-            filter = GetFilterByName(args[0]);
-        }
-        catch (NotSupportedException)
-        {
-            Console.Error.WriteLine("Invalid filter option");
-            return;
-        }
+
         filter.Process(input);
         var resultPath = $"{Path.Join(Path.GetDirectoryName(inputPath), Path.GetFileNameWithoutExtension(inputPath))}_{filter.Name}.png";
         input.SaveAsPng(resultPath);
@@ -82,7 +92,7 @@ public static class Program
     private static IImageFilter GetFilterByName(string name, params string[] filterArgs)
     {
         // Если надо параметры для алгоритма - берем массив filterArgs и парсим его параметры из строк в нужный формат 
-        // с соответствующими проверками
+        // Исключения не ловим, поскольку их надо поймать снаружи и выйти из программы
         IImageFilter filter;
         switch (name)
         {
@@ -92,6 +102,12 @@ public static class Program
             case "gray":
                 filter = new GrayscaleFilter();
                 break;
+//          case "parametrized":
+//              filter = new ParamFilter(
+//                  Int32.Parse(args[0],
+//                  Int32.Parse(args[1])
+//              );
+//              break;
             default:
                 throw new NotSupportedException();
         }
