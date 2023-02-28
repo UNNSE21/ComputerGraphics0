@@ -1,7 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using ComputerGraphics0.Filters;
-using ComputerGraphics0.Filters.PixelLevel;
+using ComputerGraphics0.Filters.Global;
+using ComputerGraphics0.Filters.Pixel;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
