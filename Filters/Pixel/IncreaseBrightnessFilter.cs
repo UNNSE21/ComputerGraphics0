@@ -15,9 +15,9 @@ public class IncreaseBrightnessFilter : IImageFilter
 
     public Image<Argb32> Process(Image<Argb32> source)
     {
-        Parallel.For(0, source.Width, (i) =>
+        for (int i = 0; i < source.Width; i++)
         {
-            Parallel.For(0, source.Height, (j) =>
+            for(int j = 0; j < source.Height; j++)
             {
                 var pixel = source[i, j];
 
@@ -26,8 +26,8 @@ public class IncreaseBrightnessFilter : IImageFilter
                     (byte)Math.Clamp(pixel.G + this.k, 0, 0xFF),
                     (byte)Math.Clamp(pixel.B + this.k, 0, 0xFF)
                 );
-            });
-        });
+            }
+        }
 
         return source;
     }
