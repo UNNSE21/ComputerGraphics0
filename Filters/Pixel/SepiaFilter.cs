@@ -16,9 +16,9 @@ public class SepiaFilter : IImageFilter
 
     public Image<Argb32> Process(Image<Argb32> source)
     {
-        Parallel.For(0, source.Width, (i) =>
+        for(int i = 0; i < source.Height; ++i)
         {
-            Parallel.For(0, source.Height, (j) =>
+            for(int j = 0; j < source.Height; ++j)
             {
                 var pixel = source[i, j];
                 var intensity = pixel.R * .36f + pixel.G * .53f + pixel.B * .11f;
@@ -28,8 +28,8 @@ public class SepiaFilter : IImageFilter
                     (byte)Math.Clamp(intensity + .5f * this.sepiaCoeff, 0, 0xFF),
                     (byte)Math.Clamp(intensity - this.sepiaCoeff, 0, 0xFF)
                 );
-            });
-        });
+            }
+        }
 
         return source;
     }

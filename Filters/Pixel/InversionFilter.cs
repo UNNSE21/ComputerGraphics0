@@ -8,7 +8,7 @@ public class InversionFilter : IImageFilter
     public string Name => "inversion";
     public Image<Argb32> Process(Image<Argb32> source)
     {
-        Parallel.For(0, source.Width, (i, state) =>
+        for(int i = 0; i < source.Height; ++i)
         {
             for (int j = 0; j < source.Height; j++)
             {
@@ -18,7 +18,7 @@ public class InversionFilter : IImageFilter
                 source[i, j] = res;
                 
             }
-        });
+        }
         return source;
     }
 }
