@@ -1,7 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using ComputerGraphics0.Filters;
-using ComputerGraphics0.Filters.PixelLevel;
+using ComputerGraphics0.Filters.Global;
+using ComputerGraphics0.Filters.Pixel;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Linq;
@@ -108,6 +109,15 @@ public static class Program
 //                  Int32.Parse(args[1])
 //              );
 //              break;
+            case "sepia":
+                filter = new SepiaFilter();
+                break;
+            case "inc":
+                filter = new IncreaseBrightnessFilter();
+                break;
+            case "shrooms":
+                filter = new ShroomsFilter();
+                break;
             default:
                 throw new NotSupportedException();
         }
