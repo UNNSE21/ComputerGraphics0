@@ -5,47 +5,71 @@ using ComputerGraphics0.Filters.Global;
 using ComputerGraphics0.Filters.Pixel;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using System.Linq;
 
 namespace ComputerGraphics0;
 
 public static class Program
 {   
     // args: 
-    // 0 - имя фильтра
-    // 1 - сохранять исходник (true|false). Если не bool - пытаемся прочитать путь (см. 2) 
-    // 2 - путь к картинке (если нет или не существует - берем из stdin).
+    // 0 - путь к картинке (если не существует - берем из stdin).
     //     Поскольку валидность существующего файла проверяется только на этапе загрузки в либу - если файл не картинка
     //      - выходим с ошибкой (иначе либо цикл и колхоз с флагами, либо goto. Оба плохо)
+    // 1 - имя фильтра
+    // 2 - сохранять исходник (true|false). 
+    // 3 и далее - параметры фильтра
+    // Для значения по умолчанию используем символ '-' (если путь тоже дефис - берем его из stdin)
     public static void Main(string[] args)
     {
         IImageFilter filter;
         Image<Argb32> input;
         string inputPath = "";
+        string filterName = "";
         bool saveSource = true;
-        if (args.Length < 1)
+        if (args.Length < 2)
         {
-            Console.Error.WriteLine("You must enter a filter name as argument");
+            Console.Error.WriteLine("You must enter a path and a filter name as arguments");
             return;
         }
-        if (args.Length == 1)
+
+        inputPath = args[0];
+        filterName = args[1];
+        if (args.Length >= 3)
         {
-            inputPath = Console.ReadLine();
-            ValidateInputPath(ref inputPath);
+            if (!Boolean.TryParse(args[2], out saveSource))
+            {
+                if (args[2] == "-")
+                {
+                    saveSource = true;
+                }
+                else
+                {
+                    Console.Error.WriteLine("Expected true or false value as third argument");
+                    return;
+                }
+            }
         }
-        if (args.Length >= 2)
+
+        try
         {
-            if (bool.TryParse(args[1], out saveSource))
-            {
-                inputPath = args.Length < 3 ? Console.ReadLine() : args[2];
-                ValidateInputPath(ref inputPath);
-            }
-            else
-            {
-                saveSource = true;
-                inputPath = args[1];
-                ValidateInputPath(ref inputPath);
-            }
+            filter = GetFilterByName(filterName, args.Skip(3).ToArray());
         }
+        catch (IndexOutOfRangeException)
+        {
+            Console.Error.WriteLine("Not enough parameters for this filter");
+            return;
+        }
+        catch (NotSupportedException)
+        {
+            Console.Error.WriteLine("Invalid filter option");
+            return;
+        }
+        catch(Exception ex) when (ex is FormatException || ex is OverflowException)
+        {
+            Console.Error.WriteLine("Not enough parameters for this filter");
+            return;
+        }
+        ValidateInputPath(ref inputPath);
         try
         {
             input = Image.Load<Argb32>(inputPath);
@@ -55,18 +79,10 @@ public static class Program
             Console.Error.WriteLine("Could not load an image. Either file is not an image or it's format is unsupported");
             return;
         }
-        try
-        {
-            filter = GetFilterByName(args[0]);
-        }
-        catch (NotSupportedException)
-        {
-            Console.Error.WriteLine("Invalid filter option");
-            return;
-        }
-        filter.Process(input);
+
+        var result = filter.Process(input);
         var resultPath = $"{Path.Join(Path.GetDirectoryName(inputPath), Path.GetFileNameWithoutExtension(inputPath))}_{filter.Name}.png";
-        input.SaveAsPng(resultPath);
+        result.SaveAsPng(resultPath);
         if (!saveSource)
         {
             File.Delete(inputPath);
@@ -74,8 +90,10 @@ public static class Program
         Console.Write(resultPath);
     }
 
-    private static IImageFilter GetFilterByName(string name)
+    private static IImageFilter GetFilterByName(string name, params string[] filterArgs)
     {
+        // Если надо параметры для алгоритма - берем массив filterArgs и парсим его параметры из строк в нужный формат 
+        // Исключения не ловим, поскольку их надо поймать снаружи и выйти из программы
         IImageFilter filter;
         switch (name)
         {
@@ -85,6 +103,12 @@ public static class Program
             case "gray":
                 filter = new GrayscaleFilter();
                 break;
+//          case "parametrized":
+//              filter = new ParamFilter(
+//                  Int32.Parse(args[0],
+//                  Int32.Parse(args[1])
+//              );
+//              break;
             case "sepia":
                 filter = new SepiaFilter();
                 break;
@@ -101,12 +125,17 @@ public static class Program
         return filter;
     }
 
-    private static void ValidateInputPath(ref string s)
+    private static void ValidateInputPath(ref string path)
     {
-        while (!File.Exists(s))
+        if (path == "-")
         {
-            Console.Error.WriteLine("Input file does not exist. Reading from stdin");
-            s = Console.ReadLine();
+            path = Console.ReadLine();
+        }
+        while (String.IsNullOrEmpty(path) ||  path == "-" || !File.Exists(path))
+        {
+            Console.Error.WriteLine($"Input file ({path}) does not exist. Reading from stdin");
+            path = Console.ReadLine();
+            Console.WriteLine(path);
         }
     }
 }
