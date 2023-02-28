@@ -1,7 +1,7 @@
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace ComputerGraphics0.Filters.PixelLevel;
+namespace ComputerGraphics0.Filters.Pixel;
 
 public class InversionFilter : IImageFilter
 {
