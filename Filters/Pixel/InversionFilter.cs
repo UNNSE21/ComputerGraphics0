@@ -1,14 +1,14 @@
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace ComputerGraphics0.Filters.PixelLevel;
+namespace ComputerGraphics0.Filters.Pixel;
 
 public class InversionFilter : IImageFilter
 {
     public string Name => "inversion";
     public Image<Argb32> Process(Image<Argb32> source)
     {
-        Parallel.For(0, source.Width, (i, state) =>
+        for(int i = 0; i < source.Width; ++i)
         {
             for (int j = 0; j < source.Height; j++)
             {
@@ -18,7 +18,7 @@ public class InversionFilter : IImageFilter
                 source[i, j] = res;
                 
             }
-        });
+        }
         return source;
     }
 }
