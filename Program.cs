@@ -2,6 +2,7 @@
 
 using ComputerGraphics0.Filters;
 using ComputerGraphics0.Filters.PixelLevel;
+using ComputerGraphics0.Filters.MathMorph;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -63,9 +64,9 @@ public static class Program
             Console.Error.WriteLine("Invalid filter option");
             return;
         }
-        filter.Process(input);
+        var result = filter.Process(input);
         var resultPath = $"{Path.Join(Path.GetDirectoryName(inputPath), Path.GetFileNameWithoutExtension(inputPath))}_{filter.Name}.png";
-        input.SaveAsPng(resultPath);
+        result.SaveAsPng(resultPath);
         if (!saveSource)
         {
             File.Delete(inputPath);
@@ -83,6 +84,28 @@ public static class Program
                 break;
             case "gray":
                 filter = new GrayscaleFilter();
+                break;
+            case "erose":
+                filter = new Erosion(new bool[7, 7] {
+                    {false, false, false, true, false, false, false},
+                    {false, false, true,  true, true,  false, false},
+                    {false, true,  true,  true, true,  true,  false},
+                    {true,  true,  true,  true, true,  true,  true },
+                    {false, true,  true,  true, true,  true,  false},
+                    {false, false, true,  true, true,  false, false},
+                    {false, false, false, true, false, false, false}
+                }, (3, 3));
+                break;
+            case "dilate":
+                filter = new Dilation(new bool[7, 7] {
+                    {false, false, false, true, false, false, false},
+                    {false, false, true,  true, true,  false, false},
+                    {false, true,  true,  true, true,  true,  false},
+                    {true,  true,  true,  true, true,  true,  true },
+                    {false, true,  true,  true, true,  true,  false},
+                    {false, false, true,  true, true,  false, false},
+                    {false, false, false, true, false, false, false}
+                }, (3, 3));
                 break;
             default:
                 throw new NotSupportedException();
