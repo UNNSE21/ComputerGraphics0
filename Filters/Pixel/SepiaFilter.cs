@@ -16,7 +16,7 @@ public class SepiaFilter : IImageFilter
 
     public Image<Argb32> Process(Image<Argb32> source)
     {
-        for(int i = 0; i < source.Height; ++i)
+        for(int i = 0; i < source.Width; ++i)
         {
             for(int j = 0; j < source.Height; ++j)
             {
