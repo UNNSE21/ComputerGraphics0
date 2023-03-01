@@ -3,10 +3,10 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace ComputerGraphics0.Filters.Pixel;
 
-public class SepiaFilter : IImageFilter
+public class SepiaFilter : ImageFilter
 {
 
-    public string Name => "sepia";
+    public override string Name => $"sepia_{sepiaCoeff}";
     private float sepiaCoeff;
 
     public SepiaFilter(float sepiaCoeff = 30f)
@@ -14,23 +14,14 @@ public class SepiaFilter : IImageFilter
         this.sepiaCoeff = sepiaCoeff;
     }
 
-    public Image<Argb32> Process(Image<Argb32> source)
+    protected override Argb32 GetNewPixel(Image<Argb32> source, int i, int j)
     {
-        for(int i = 0; i < source.Width; ++i)
-        {
-            for(int j = 0; j < source.Height; ++j)
-            {
-                var pixel = source[i, j];
-                var intensity = pixel.R * .36f + pixel.G * .53f + pixel.B * .11f;
-
-                source[i, j] = new Argb32(
-                    (byte)Math.Clamp(intensity + 2 * this.sepiaCoeff, 0, 0xFF),
-                    (byte)Math.Clamp(intensity + .5f * this.sepiaCoeff, 0, 0xFF),
-                    (byte)Math.Clamp(intensity - this.sepiaCoeff, 0, 0xFF)
-                );
-            }
-        }
-
-        return source;
+        var pixel = source[i, j];
+        var intensity = pixel.R * .36f + pixel.G * .53f + pixel.B * .11f;
+        return new Argb32(
+            (byte)Math.Clamp(intensity + 2 * this.sepiaCoeff, 0, 0xFF),
+            (byte)Math.Clamp(intensity + .5f * this.sepiaCoeff, 0, 0xFF),
+            (byte)Math.Clamp(intensity - this.sepiaCoeff, 0, 0xFF)
+        );
     }
 }

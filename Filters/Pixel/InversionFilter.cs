@@ -3,22 +3,14 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace ComputerGraphics0.Filters.Pixel;
 
-public class InversionFilter : IImageFilter
+public class InversionFilter : ImageFilter
 {
-    public string Name => "inversion";
-    public Image<Argb32> Process(Image<Argb32> source)
+    public override string Name => "inversion";
+
+    protected override Argb32 GetNewPixel(Image<Argb32> source, int i, int j)
     {
-        for(int i = 0; i < source.Width; ++i)
-        {
-            for (int j = 0; j < source.Height; j++)
-            {
-                var res = new Argb32((byte)(255 - source[i, j].R),
-                    (byte)(255 - source[i, j].G),
-                    (byte)(255 - source[i, j].B));
-                source[i, j] = res;
-                
-            }
-        }
-        return source;
+        return new Argb32((byte)(255 - source[i, j].R),
+            (byte)(255 - source[i, j].G),
+            (byte)(255 - source[i, j].B));
     }
 }

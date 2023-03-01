@@ -3,32 +3,23 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace ComputerGraphics0.Filters.Pixel;
 
-public class IncreaseBrightnessFilter : IImageFilter
+public class IncreaseBrightnessFilter : ImageFilter
 {
-    public string Name => "increase_brightness";
-    private int k;
+    public override string Name => $"increase_brightness_{k:+0;-#}";
+    private readonly int k;
 
     public IncreaseBrightnessFilter(int k = 50)
     {
         this.k = k;
     }
-
-    public Image<Argb32> Process(Image<Argb32> source)
+    
+    protected override Argb32 GetNewPixel(Image<Argb32> source, int i, int j)
     {
-        for (int i = 0; i < source.Width; i++)
-        {
-            for(int j = 0; j < source.Height; j++)
-            {
-                var pixel = source[i, j];
-
-                source[i, j] = new Argb32(
-                    (byte)Math.Clamp(pixel.R + this.k, 0, 0xFF),
-                    (byte)Math.Clamp(pixel.G + this.k, 0, 0xFF),
-                    (byte)Math.Clamp(pixel.B + this.k, 0, 0xFF)
-                );
-            }
-        }
-
-        return source;
+        var pixel = source[i, j];
+        return new Argb32(
+            (byte)Math.Clamp(pixel.R + this.k, 0, 0xFF),
+            (byte)Math.Clamp(pixel.G + this.k, 0, 0xFF),
+            (byte)Math.Clamp(pixel.B + this.k, 0, 0xFF)
+        );
     }
 }
