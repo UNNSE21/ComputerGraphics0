@@ -15,13 +15,14 @@ namespace ComputerGraphics0.Filters
         public virtual Image<Argb32> Process(Image<Argb32> source)
         {
             Image<Argb32> result = new Image<Argb32>(source.Width, source.Height);
-            for(int i = 0; i < source.Width; ++i)
+            Parallel.For(0, source.Width, i =>
             {
-                for(int j = 0; j < source.Height; ++j)
+                Parallel.For(0, source.Height, j =>
                 {
                     result[i, j] = GetNewPixel(source, i, j);
-                }
-            }
+                    
+                });
+            });
             return result;
         }
         protected abstract Argb32 GetNewPixel(Image<Argb32> source, int i, int j);

@@ -1,19 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ComputerGraphics0.Filters;
-
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace ComputerGraphics0.Filters.MathMorph
+namespace ComputerGraphics0.Filters.Kernel.MathMorph
 {
-    public class Erosion : MathMorphFilter
+    public class ErosionFilter : MathMorphFilter
     {
         public override string Name => "erosion";
-        public Erosion(bool[,] structureElement, (int, int) strElPivot)
-         : base(structureElement, strElPivot){
+        public ErosionFilter(bool[,] structureElement, (int, int) structureElementAnchor)
+         : base(structureElement, structureElementAnchor){
             
         }
 
@@ -21,14 +15,14 @@ namespace ComputerGraphics0.Filters.MathMorph
         {
             Argb32 result = new Argb32();
             var minIntensity = 255;
-            for(int i = 0; i < strEl.GetLength(0); ++i)
+            for(int i = 0; i < StructureElement.GetLength(0); ++i)
             {
-                for(int j = 0; j < strEl.GetLength(0); ++j)
+                for(int j = 0; j < StructureElement.GetLength(0); ++j)
                 {
-                    if(strEl[i, j])
+                    if(StructureElement[i, j])
                     {
-                        var pix = source[Math.Clamp(x + (i - strElPivot.Item1), 0, source.Width-1),
-                            Math.Clamp(y + (j - strElPivot.Item2), 0, source.Height-1)];
+                        var pix = source[Math.Clamp(x + (i - StructureElementAnchor.Item1), 0, source.Width-1),
+                            Math.Clamp(y + (j - StructureElementAnchor.Item2), 0, source.Height-1)];
                         var intensity = (int)(0.36 * pix.R + 0.53 * pix.G + 0.11 * pix.B);
                         if(intensity < minIntensity){ 
                             minIntensity = intensity;
