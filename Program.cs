@@ -6,6 +6,7 @@ using ComputerGraphics0.Filters.Pixel;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Linq;
+using ComputerGraphics0.Filters.Kernel.MathMorph;
 
 namespace ComputerGraphics0;
 
@@ -20,7 +21,7 @@ public static class Program
     // 3 и далее - параметры фильтра
     // Для значения по умолчанию используем символ '-' (если путь тоже дефис - берем его из stdin)
     public static void Main(string[] args)
-    {
+    { 
         IImageFilter filter;
         Image<Argb32> input;
         string inputPath = "";
@@ -66,7 +67,7 @@ public static class Program
         }
         catch(Exception ex) when (ex is FormatException || ex is OverflowException)
         {
-            Console.Error.WriteLine("Not enough parameters for this filter");
+            Console.Error.WriteLine("Not enough parameters for this filter or some are invalid");
             return;
         }
         ValidateInputPath(ref inputPath);
@@ -95,9 +96,11 @@ public static class Program
         // Если надо параметры для алгоритма - берем массив filterArgs и парсим его параметры из строк в нужный формат 
         // Исключения не ловим, поскольку их надо поймать снаружи и выйти из программы
         IImageFilter filter;
+        int arg0,arg0Out;
+        int arg1,arg1Out;
         switch (name)
         {
-            case "inv":
+            case "invert":
                 filter = new InversionFilter();
                 break;
             case "gray":
@@ -118,11 +121,81 @@ public static class Program
             case "shrooms":
                 filter = new ShroomsFilter();
                 break;
+            case "opening":
+                if (filterArgs.Length >= 1 && Int32.TryParse(filterArgs[0], out arg0Out))
+                    arg0 = arg0Out;
+                else
+                    arg0 = 10;
+                filter = new OpeningFilter(GenerateCircleMask(arg0), (arg0, arg0));
+                break;
+            case "closing":
+                if (filterArgs.Length >= 1 && Int32.TryParse(filterArgs[0], out arg0Out))
+                    arg0 = arg0Out;
+                else
+                    arg0 = 10;
+                filter = new ClosingFilter(GenerateCircleMask(arg0), (arg0, arg0));
+                break;
+            case "erose":
+                if (filterArgs.Length >= 1 && Int32.TryParse(filterArgs[0], out arg0Out))
+                    arg0 = arg0Out;
+                else
+                    arg0 = 10;
+                filter = new ErosionFilter(GenerateCircleMask(arg0), (arg0, arg0));
+                break;
+            case "dilate":
+                if (filterArgs.Length >= 1 && Int32.TryParse(filterArgs[0], out arg0Out))
+                    arg0 = arg0Out;
+                else
+                    arg0 = 10;
+                filter = new DilationFilter(GenerateCircleMask(arg0), (arg0, arg0));
+                break;
+            case "inner_border":
+                if (filterArgs.Length >= 1 && Int32.TryParse(filterArgs[0], out arg0Out))
+                    arg0 = arg0Out;
+                else
+                    arg0 = 10;
+                if (filterArgs.Length >= 2 && Int32.TryParse(filterArgs[1], out arg1Out))
+                    arg1 = arg1Out;
+                else
+                    arg1 = 127;
+                filter = new InnerBorderFilter(GenerateCircleMask(arg0), (arg0, arg0), arg1);
+                break;
+            case "outer_border":
+                if (filterArgs.Length >= 1 && Int32.TryParse(filterArgs[0], out arg0Out))
+                    arg0 = arg0Out;
+                else
+                    arg0 = 10;
+                if (filterArgs.Length >= 2 && Int32.TryParse(filterArgs[1], out arg1Out))
+                    arg1 = arg1Out;
+                else
+                    arg1 = 127;
+                filter = new OuterBorderFilter(GenerateCircleMask(arg0), (arg0, arg0), arg1);
+                break;
+            case "binary":
+                if (filterArgs.Length >= 1 && Int32.TryParse(filterArgs[0], out arg0Out))
+                    arg0 = arg0Out;
+                else
+                    arg0 = 127;
+                filter = new BinarizationFilter(arg0);
+                break;
             default:
                 throw new NotSupportedException();
         }
 
         return filter;
+    }
+
+    private static bool[,] GenerateCircleMask(int radius)
+    {
+        var result = new bool[radius * 2 + 1, radius * 2 + 1];
+        for (int i = 0; i < result.GetLength(0); ++i)
+        {
+            for (int j = 0; j < result.GetLength(1); ++j)
+            {
+                result[i, j] = (i - radius) * (i - radius) + (j - radius) * (j - radius) <= radius*radius;
+            }
+        }
+        return result;
     }
 
     private static void ValidateInputPath(ref string path)
