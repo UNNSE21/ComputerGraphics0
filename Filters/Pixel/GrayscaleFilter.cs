@@ -3,22 +3,16 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace ComputerGraphics0.Filters.Pixel;
 
-public class GrayscaleFilter : IImageFilter
+public class GrayscaleFilter : ImageFilter
 {
-    public string Name => "grayscale";
-    public Image<Argb32> Process(Image<Argb32> source)
+    public override string Name => "grayscale";
+
+    protected override Argb32 GetNewPixel(Image<Argb32> source, int i, int j)
     {
-        Parallel.For(0, source.Width, (i, state) =>
-        {
-            for (int j = 0; j < source.Height; j++)
-            {
-                var sourceVector = source[i, j].ToVector4();
-                var intensity = sourceVector.X * .36f +
-                    sourceVector.Y * .53f +
-                    sourceVector.Z * .11f;
-                source[i, j] = new Argb32(intensity, intensity, intensity);
-            }
-        });
-        return source;
+        var sourceVector = source[i, j].ToVector4();
+        var intensity = sourceVector.X * .36f +
+                        sourceVector.Y * .53f +
+                        sourceVector.Z * .11f;
+        return new Argb32(intensity, intensity, intensity);
     }
 }
