@@ -6,6 +6,7 @@ using ComputerGraphics0.Filters.Pixel;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Linq;
+using ComputerGraphics0.Filters.Kernel;
 using ComputerGraphics0.Filters.Kernel.MathMorph;
 
 namespace ComputerGraphics0;
@@ -141,6 +142,9 @@ public static class Program
                 break;
             case "binary":
                 filter = new BinarizationFilter(ParseArg(filterArgs, 0, 127, Int32.TryParse));
+                break;
+            case "avg_blur":
+                filter = new AverageBlur(ParseArg(filterArgs, 0, 10, Int32.TryParse));
                 break;
             default:
                 throw new NotSupportedException();
