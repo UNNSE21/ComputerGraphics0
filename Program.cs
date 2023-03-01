@@ -144,7 +144,12 @@ public static class Program
                 filter = new BinarizationFilter(ParseArg(filterArgs, 0, 127, Int32.TryParse));
                 break;
             case "avg_blur":
-                filter = new AverageBlur(ParseArg(filterArgs, 0, 10, Int32.TryParse));
+                filter = new AverageBlur(ParseArg(filterArgs, 0, 3, Int32.TryParse));
+                break;
+            case "gauss_blur":
+                filter = new GaussBlur(ParseArg(filterArgs, 0, 3, Int32.TryParse),
+                    ParseArg(filterArgs, 1, 10f, Single.TryParse)
+                );
                 break;
             default:
                 throw new NotSupportedException();
