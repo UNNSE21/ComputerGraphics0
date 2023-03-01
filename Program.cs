@@ -93,11 +93,8 @@ public static class Program
 
     private static IImageFilter GetFilterByName(string name, params string[] filterArgs)
     {
-        // Если надо параметры для алгоритма - берем массив filterArgs и парсим его параметры из строк в нужный формат 
-        // Исключения не ловим, поскольку их надо поймать снаружи и выйти из программы
         IImageFilter filter;
-        int arg0,arg0Out;
-        int arg1,arg1Out;
+        int arg0;
         switch (name)
         {
             case "invert":
@@ -106,77 +103,44 @@ public static class Program
             case "gray":
                 filter = new GrayscaleFilter();
                 break;
-//          case "parametrized":
-//              filter = new ParamFilter(
-//                  Int32.Parse(args[0],
-//                  Int32.Parse(args[1])
-//              );
-//              break;
             case "sepia":
-                filter = new SepiaFilter();
+                filter = new SepiaFilter(ParseArg(filterArgs, 0, 30f, Single.TryParse));
                 break;
             case "inc":
-                filter = new IncreaseBrightnessFilter();
+                filter = new IncreaseBrightnessFilter(
+                    ParseArg(filterArgs, 0, 50, Int32.TryParse));
                 break;
             case "shrooms":
                 filter = new ShroomsFilter();
                 break;
             case "opening":
-                if (filterArgs.Length >= 1 && Int32.TryParse(filterArgs[0], out arg0Out))
-                    arg0 = arg0Out;
-                else
-                    arg0 = 10;
+                arg0 = ParseArg(filterArgs, 0, 10, Int32.TryParse);
                 filter = new OpeningFilter(GenerateCircleMask(arg0), (arg0, arg0));
                 break;
             case "closing":
-                if (filterArgs.Length >= 1 && Int32.TryParse(filterArgs[0], out arg0Out))
-                    arg0 = arg0Out;
-                else
-                    arg0 = 10;
+                arg0 = ParseArg(filterArgs, 0, 10, Int32.TryParse);
                 filter = new ClosingFilter(GenerateCircleMask(arg0), (arg0, arg0));
                 break;
             case "erose":
-                if (filterArgs.Length >= 1 && Int32.TryParse(filterArgs[0], out arg0Out))
-                    arg0 = arg0Out;
-                else
-                    arg0 = 10;
+                arg0 = ParseArg(filterArgs, 0, 10, Int32.TryParse);
                 filter = new ErosionFilter(GenerateCircleMask(arg0), (arg0, arg0));
                 break;
             case "dilate":
-                if (filterArgs.Length >= 1 && Int32.TryParse(filterArgs[0], out arg0Out))
-                    arg0 = arg0Out;
-                else
-                    arg0 = 10;
+                arg0 = ParseArg(filterArgs, 0, 10, Int32.TryParse);
                 filter = new DilationFilter(GenerateCircleMask(arg0), (arg0, arg0));
                 break;
             case "inner_border":
-                if (filterArgs.Length >= 1 && Int32.TryParse(filterArgs[0], out arg0Out))
-                    arg0 = arg0Out;
-                else
-                    arg0 = 10;
-                if (filterArgs.Length >= 2 && Int32.TryParse(filterArgs[1], out arg1Out))
-                    arg1 = arg1Out;
-                else
-                    arg1 = 127;
-                filter = new InnerBorderFilter(GenerateCircleMask(arg0), (arg0, arg0), arg1);
+                arg0 = ParseArg(filterArgs, 0, 10, Int32.TryParse);
+                filter = new InnerBorderFilter(GenerateCircleMask(arg0), (arg0, arg0), 
+                    ParseArg(filterArgs, 1, 127, Int32.TryParse));
                 break;
             case "outer_border":
-                if (filterArgs.Length >= 1 && Int32.TryParse(filterArgs[0], out arg0Out))
-                    arg0 = arg0Out;
-                else
-                    arg0 = 10;
-                if (filterArgs.Length >= 2 && Int32.TryParse(filterArgs[1], out arg1Out))
-                    arg1 = arg1Out;
-                else
-                    arg1 = 127;
-                filter = new OuterBorderFilter(GenerateCircleMask(arg0), (arg0, arg0), arg1);
+                arg0 = ParseArg(filterArgs, 0, 10, Int32.TryParse);
+                filter = new OuterBorderFilter(GenerateCircleMask(arg0), (arg0, arg0), 
+                    ParseArg(filterArgs, 1, 127, Int32.TryParse));
                 break;
             case "binary":
-                if (filterArgs.Length >= 1 && Int32.TryParse(filterArgs[0], out arg0Out))
-                    arg0 = arg0Out;
-                else
-                    arg0 = 127;
-                filter = new BinarizationFilter(arg0);
+                filter = new BinarizationFilter(ParseArg(filterArgs, 0, 127, Int32.TryParse));
                 break;
             default:
                 throw new NotSupportedException();
@@ -184,7 +148,18 @@ public static class Program
 
         return filter;
     }
-
+    
+    delegate bool TryParseHandler<T>(string value, out T result);
+    private static T ParseArg<T>(string[] args, int index, T defaultValue, TryParseHandler<T> handler)
+    {
+        T arg;
+        if (args.Length > index && handler(args[index], out T arg0Out))
+            arg = arg0Out;
+        else
+            arg = defaultValue;
+        return arg;
+    }
+    
     private static bool[,] GenerateCircleMask(int radius)
     {
         var result = new bool[radius * 2 + 1, radius * 2 + 1];
