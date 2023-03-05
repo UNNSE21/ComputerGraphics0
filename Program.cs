@@ -164,6 +164,9 @@ public static class Program
                     ParseArg(filterArgs, 1, 10f, Single.TryParse)
                 );
                 break;
+            case "sobel":
+                filter = new SobelFilter();
+                break;
             default:
                 throw new NotSupportedException();
         }

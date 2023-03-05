@@ -3,9 +3,10 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace ComputerGraphics0.Filters.Kernel;
 
-public abstract class KernelFilter : ImageFilter
+public abstract class ConvolutionFilter : ImageFilter
 {
     protected float[,] _kernel;
+
     protected override Argb32 GetNewPixel(Image<Argb32> source, int x, int y)
     {
         float resultR = 0.0f, resultG = 0.0f, resultB = 0.0f;
@@ -24,6 +25,6 @@ public abstract class KernelFilter : ImageFilter
             }
         }
 
-        return new Argb32((byte)resultR, (byte)resultG, (byte)resultB);
+        return new Argb32((byte)(Math.Clamp(resultR, 0, 255)), (byte)Math.Clamp(resultG, 0, 255), (byte)Math.Clamp(resultB, 0, 255));
     }
 }

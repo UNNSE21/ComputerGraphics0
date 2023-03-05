@@ -1,6 +1,6 @@
 namespace ComputerGraphics0.Filters.Kernel;
 
-public class GaussBlur : KernelFilter
+public class GaussBlur : ConvolutionFilter
 {
     public override string Name => $"gauss_blur_{_radius}_{_sigma}";
     private int _radius;

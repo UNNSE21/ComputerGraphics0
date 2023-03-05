@@ -1,6 +1,6 @@
 namespace ComputerGraphics0.Filters.Kernel;
 
-public class AverageBlur : KernelFilter
+public class AverageBlur : ConvolutionFilter
 {
     public override string Name => $"blur_avg_{_radius}";
     private int _radius;
