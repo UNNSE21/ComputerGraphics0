@@ -139,6 +139,10 @@ public static class Program
                 arg0 = ParseArg(filterArgs, 0, 10, Int32.TryParse);
                 filter = new BlackHatFilter(GenerateCircleMask(arg0), (arg0, arg0));
                 break;
+            case "morph_gradient":
+                arg0 = ParseArg(filterArgs, 0, 10, Int32.TryParse);
+                filter = new GranientFilter(GenerateCircleMask(arg0), (arg0, arg0));
+                break;
             case "inner_border":
                 arg0 = ParseArg(filterArgs, 0, 10, Int32.TryParse);
                 filter = new InnerBorderFilter(GenerateCircleMask(arg0), (arg0, arg0), 
