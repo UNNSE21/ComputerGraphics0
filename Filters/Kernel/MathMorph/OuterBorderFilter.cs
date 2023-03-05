@@ -26,9 +26,9 @@ public class OuterBorderFilter : MathMorphFilter
     protected override Argb32 GetNewPixel(Image<Argb32> source, int i, int j)
     {
         return new Argb32(
-            (byte) _dilatedImage[i, j].R - source[i, j].R,
-            (byte) _dilatedImage[i, j].G - source[i, j].G,
-            (byte) _dilatedImage[i, j].B - source[i, j].B
+            (byte) (_dilatedImage[i, j].R - source[i, j].R),
+            (byte) (_dilatedImage[i, j].G - source[i, j].G),
+            (byte) (_dilatedImage[i, j].B - source[i, j].B)
         );
     }
 }

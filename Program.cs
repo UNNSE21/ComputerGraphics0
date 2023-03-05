@@ -130,6 +130,15 @@ public static class Program
                 arg0 = ParseArg(filterArgs, 0, 10, Int32.TryParse);
                 filter = new DilationFilter(GenerateCircleMask(arg0), (arg0, arg0));
                 break;
+            case "tophat":
+                arg0 = ParseArg(filterArgs, 0, 10, Int32.TryParse);
+                filter = new TopHatFilter(GenerateCircleMask(arg0), (arg0, arg0));
+                break;
+            
+            case "blackhat":
+                arg0 = ParseArg(filterArgs, 0, 10, Int32.TryParse);
+                filter = new BlackHatFilter(GenerateCircleMask(arg0), (arg0, arg0));
+                break;
             case "inner_border":
                 arg0 = ParseArg(filterArgs, 0, 10, Int32.TryParse);
                 filter = new InnerBorderFilter(GenerateCircleMask(arg0), (arg0, arg0), 
@@ -177,6 +186,18 @@ public static class Program
             for (int j = 0; j < result.GetLength(1); ++j)
             {
                 result[i, j] = (i - radius) * (i - radius) + (j - radius) * (j - radius) <= radius*radius;
+            }
+        }
+        return result;
+    }
+    private static bool[,] GenerateRectMask(int radius)
+    {
+        var result = new bool[radius * 2 + 1, radius * 2 + 1];
+        for (int i = 0; i < result.GetLength(0); ++i)
+        {
+            for (int j = 0; j < result.GetLength(1); ++j)
+            {
+                result[i, j] = true;
             }
         }
         return result;

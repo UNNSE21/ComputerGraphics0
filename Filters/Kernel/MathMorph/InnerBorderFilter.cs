@@ -26,9 +26,9 @@ public class InnerBorderFilter : MathMorphFilter
     protected override Argb32 GetNewPixel(Image<Argb32> source, int i, int j)
     {
         return new Argb32(
-            (byte) source[i, j].R - _erosedImage[i, j].R,
-            (byte) source[i, j].G - _erosedImage[i, j].G,
-            (byte) source[i, j].B - _erosedImage[i, j].B
+            (byte) (source[i, j].R - _erosedImage[i, j].R),
+            (byte) (source[i, j].G - _erosedImage[i, j].G),
+            (byte) (source[i, j].B - _erosedImage[i, j].B)
         );
     }
 }
