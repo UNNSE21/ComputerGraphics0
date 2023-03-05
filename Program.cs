@@ -167,9 +167,17 @@ public static class Program
             case "sobel":
                 filter = new SobelFilter();
                 break;
-            
             case "sharpen":
                 filter = new SharpnessIncreaseFilter();
+                break;
+            case "median":
+                filter = new MedianFilter(ParseArg(filterArgs, 0, 1, Int32.TryParse));
+                break;
+            case "max":
+                filter = new MaxFilter(ParseArg(filterArgs, 0, 1, Int32.TryParse));
+                break;
+            case "bright_borders":
+                filter = new BrightBordersFilter();
                 break;
             default:
                 throw new NotSupportedException();
