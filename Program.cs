@@ -167,6 +167,10 @@ public static class Program
             case "sobel":
                 filter = new SobelFilter();
                 break;
+            
+            case "sharpen":
+                filter = new SharpnessIncreaseFilter();
+                break;
             default:
                 throw new NotSupportedException();
         }
