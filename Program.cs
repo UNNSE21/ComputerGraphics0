@@ -182,6 +182,12 @@ public static class Program
             case "emboss":
                 filter = new EmbossFilter();
                 break;
+            case "scharra":
+                filter = new ScharraFilter();
+                break;
+            case "priutta":
+                filter = new PriuttaFilter();
+                break;
             default:
                 throw new NotSupportedException();
         }
