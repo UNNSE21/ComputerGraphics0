@@ -6,7 +6,7 @@ using ComputerGraphics0.Filters.Pixel;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Linq;
-using ComputerGraphics0.Filters.Kernel;
+using ComputerGraphics0.Filters.Local;
 using ComputerGraphics0.Filters.Kernel.MathMorph;
 
 namespace ComputerGraphics0;

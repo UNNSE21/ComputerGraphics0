@@ -1,4 +1,4 @@
-namespace ComputerGraphics0.Filters.Kernel;
+namespace ComputerGraphics0.Filters.Local;
 
 public class AverageBlur : ConvolutionFilter
 {

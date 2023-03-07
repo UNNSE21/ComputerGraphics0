@@ -2,7 +2,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using ComputerGraphics0.Filters.Pixel;
 
-namespace ComputerGraphics0.Filters.Kernel;
+namespace ComputerGraphics0.Filters.Local;
 
 public class EmbossFilter : ConvolutionFilter
 {

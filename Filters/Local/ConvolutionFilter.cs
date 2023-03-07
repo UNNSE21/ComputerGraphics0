@@ -1,7 +1,7 @@
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace ComputerGraphics0.Filters.Kernel;
+namespace ComputerGraphics0.Filters.Local;
 
 public abstract class ConvolutionFilter : ImageFilter
 {
