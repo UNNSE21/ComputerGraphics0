@@ -7,7 +7,8 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Linq;
 using ComputerGraphics0.Filters.Local;
-using ComputerGraphics0.Filters.Kernel.MathMorph;
+using ComputerGraphics0.Filters.Geometrical;
+using ComputerGraphics0.Filters.Local.MathMorph;
 
 namespace ComputerGraphics0;
 
@@ -134,7 +135,6 @@ public static class Program
                 arg0 = ParseArg(filterArgs, 0, 10, Int32.TryParse);
                 filter = new TopHatFilter(GenerateCircleMask(arg0), (arg0, arg0));
                 break;
-            
             case "blackhat":
                 arg0 = ParseArg(filterArgs, 0, 10, Int32.TryParse);
                 filter = new BlackHatFilter(GenerateCircleMask(arg0), (arg0, arg0));
@@ -161,8 +161,7 @@ public static class Program
                 break;
             case "gauss_blur":
                 filter = new GaussBlur(ParseArg(filterArgs, 0, 3, Int32.TryParse),
-                    ParseArg(filterArgs, 1, 10f, Single.TryParse)
-                );
+                    ParseArg(filterArgs, 1, 10f, Single.TryParse));
                 break;
             case "sobel":
                 filter = new SobelFilter();
@@ -187,7 +186,7 @@ public static class Program
                 break;
             case "priutta":
                 filter = new PriuttaFilter();
-		break;
+		        break;
             case "mrotate":
                 filter = new AffineRotationFilter(ParseArg(filterArgs, 0, 45.0f, Single.TryParse));
                 break;
@@ -209,6 +208,9 @@ public static class Program
                 break;
             case "sharpen2":
                 filter = new SharpnessIncrease2Filter();
+                break;
+            case "motionBlur":
+                filter = new MotionBlurFilter(ParseArg(filterArgs, 0, 5, Int32.TryParse));
                 break;
             default:
                 throw new NotSupportedException();

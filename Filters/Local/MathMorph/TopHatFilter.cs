@@ -2,7 +2,7 @@ using System.Net.Sockets;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace ComputerGraphics0.Filters.Kernel.MathMorph;
+namespace ComputerGraphics0.Filters.Local.MathMorph;
 
 public class TopHatFilter : MathMorphFilter
 {

@@ -1,4 +1,4 @@
-namespace ComputerGraphics0.Filters.Kernel.MathMorph
+namespace ComputerGraphics0.Filters.Local.MathMorph
 {
     public abstract class MathMorphFilter : ImageFilter
     {
