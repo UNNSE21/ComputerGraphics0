@@ -179,6 +179,9 @@ public static class Program
             case "bright_borders":
                 filter = new BrightBordersFilter();
                 break;
+            case "emboss":
+                filter = new EmbossFilter();
+                break;
             default:
                 throw new NotSupportedException();
         }
