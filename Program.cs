@@ -187,6 +187,25 @@ public static class Program
                 break;
             case "priutta":
                 filter = new PriuttaFilter();
+		break;
+            case "mrotate":
+                filter = new AffineRotationFilter(ParseArg(filterArgs, 0, 45.0f, Single.TryParse));
+                break;
+            case "rotate":
+                filter = new RotationFilter(ParseArg(filterArgs, 0, 45.0f, Single.TryParse));
+                break;
+            case "shift":
+                filter = new ShiftFilter(ParseArg(filterArgs, 0, 50, Int32.TryParse),
+                    ParseArg(filterArgs, 1, 0, Int32.TryParse));
+                break;
+            case "wavesh":
+                filter = new WavesHorizontalFilter();
+                break;
+            case "wavesv":
+                filter = new WavesVerticalFilter();
+                break;
+            case "glass":
+                filter = new GlassFilter();
                 break;
             default:
                 throw new NotSupportedException();
