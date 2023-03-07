@@ -188,6 +188,9 @@ public static class Program
             case "priutta":
                 filter = new PriuttaFilter();
                 break;
+            case "sharpen2":
+                filter = new SharpnessIncrease2Filter();
+                break;
             default:
                 throw new NotSupportedException();
         }
