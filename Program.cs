@@ -207,6 +207,9 @@ public static class Program
             case "glass":
                 filter = new GlassFilter();
                 break;
+            case "sharpen2":
+                filter = new SharpnessIncrease2Filter();
+                break;
             default:
                 throw new NotSupportedException();
         }
