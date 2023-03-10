@@ -209,8 +209,14 @@ public static class Program
             case "sharpen2":
                 filter = new SharpnessIncrease2Filter();
                 break;
-            case "motionBlur":
+            case "motion_blur":
                 filter = new MotionBlurFilter(ParseArg(filterArgs, 0, 5, Int32.TryParse));
+                break;
+            case "linear_expand":
+                filter = new LinearExpandFilter();
+                break;
+            case "histogram":
+                filter = new HistogramDrawer();
                 break;
             default:
                 throw new NotSupportedException();
