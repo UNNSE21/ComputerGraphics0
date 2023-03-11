@@ -218,6 +218,12 @@ public static class Program
             case "histogram":
                 filter = new HistogramDrawer();
                 break;
+            case "perfect_reflect":
+                filter = new PerfectReflectFilter();
+                break;
+            case "based":
+                filter = new BasedCorrectionFilter(new Argb32((byte)255, (byte)255, (byte)255));
+                break;
             default:
                 throw new NotSupportedException();
         }
